@@ -21,8 +21,9 @@ public class PickController {
 
     @PatchMapping("/check")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void checkStudent(@RequestParam(name = "gcn") String gcn, @RequestParam(name = "is_attendance") String isAttendance) {
-        pickService.checkStudent(gcn, isAttendance);
+    public void checkStudent(@RequestParam String gcn, @RequestParam(name = "is_attendance") String isAttendance,
+                             @RequestParam String period) {
+        pickService.checkStudent(gcn, isAttendance, period);
     }
 
     @GetMapping("/student/{gubun}")

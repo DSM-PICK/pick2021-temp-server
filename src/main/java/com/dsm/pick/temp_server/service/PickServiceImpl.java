@@ -35,12 +35,12 @@ public class PickServiceImpl implements PickService{
     }
 
     @Override
-    public void checkStudent(String gcn, String isAttendance) {
+    public void checkStudent(String gcn, String isAttendance, String period) {
         Student student = studentRepository.findByGcn(gcn)
                 .orElseThrow();
         Attendance attendance = attendanceRepository.findByDate(LocalDate.now())
                 .orElseThrow();
-        Check check = checkRepository.findByAttendanceAndStudent(attendance, student)
+        Check check = checkRepository.findByAttendanceAndStudentAndPeriod(attendance, student, period)
                 .orElseThrow();
         check.modifyAttendance(CheckType.valueOf(isAttendance));
         checkRepository.save(check);
@@ -55,7 +55,7 @@ public class PickServiceImpl implements PickService{
                 attendance.getDate(), attendance.getTeacher());
     }
 
-    @Scheduled(cron = "0 54 21 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 01 0 * * *", zone = "Asia/Seoul")
     public void setCheck() {
         Attendance attendance = Attendance.builder()
                 .date(LocalDate.now())

@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface CheckRepository extends CrudRepository<Check, Long> {
-    Optional<Check> findByAttendanceAndStudent(Attendance attendance, Student student);
+    Optional<Check> findByAttendanceAndStudentAndPeriod(Attendance attendance, Student student, String period);
     List<Check> findAllByGubun(String gubun);
 }
