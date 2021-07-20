@@ -10,6 +10,9 @@ import com.dsm.pick.temp_server.entity.check.CheckType;
 import com.dsm.pick.temp_server.entity.gubun.Gubun;
 import com.dsm.pick.temp_server.entity.student.Student;
 import com.dsm.pick.temp_server.entity.student.StudentRepository;
+import com.dsm.pick.temp_server.exception.AttendanceNotFoundException;
+import com.dsm.pick.temp_server.exception.CheckNotFoundException;
+import com.dsm.pick.temp_server.exception.StudentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,7 @@ public class PickServiceImpl implements PickService{
     @Override
     public void modifyTeacherName(String name) {
         Attendance attendance = attendanceRepository.findByDate(LocalDate.now())
-                .orElseThrow();
+                .orElseThrow(AttendanceNotFoundException::new);
         attendance.modifyTeacherName(name);
         attendanceRepository.save(attendance);
     }
@@ -37,11 +40,11 @@ public class PickServiceImpl implements PickService{
     @Override
     public void checkStudent(String gcn, String isAttendance, String period) {
         Student student = studentRepository.findByGcn(gcn)
-                .orElseThrow();
+                .orElseThrow(StudentNotFoundException::new);
         Attendance attendance = attendanceRepository.findByDate(LocalDate.now())
-                .orElseThrow();
+                .orElseThrow(AttendanceNotFoundException::new);
         Check check = checkRepository.findByAttendanceAndStudentAndPeriod(attendance, student, period)
-                .orElseThrow();
+                .orElseThrow(CheckNotFoundException::new);
         check.modifyAttendance(CheckType.valueOf(isAttendance));
         checkRepository.save(check);
     }
@@ -50,12 +53,12 @@ public class PickServiceImpl implements PickService{
     public CheckResponse getStudentList(String gubun) {
         List<Check> checkList = checkRepository.findAllByGubun(gubun);
         Attendance attendance = attendanceRepository.findByDate(LocalDate.now())
-                .orElseThrow();
+                .orElseThrow(AttendanceNotFoundException::new);
         return new CheckResponse(checkList.stream().map(StudentResponse::new).collect(Collectors.toList()),
                 attendance.getDate(), attendance.getTeacher());
     }
 
-    @Scheduled(cron = "0 01 0 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 32 1 * * *", zone = "Asia/Seoul")
     public void setCheck() {
         Attendance attendance = Attendance.builder()
                 .date(LocalDate.now())
