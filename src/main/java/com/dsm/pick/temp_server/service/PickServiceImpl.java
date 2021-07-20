@@ -58,7 +58,7 @@ public class PickServiceImpl implements PickService{
                 attendance.getDate(), attendance.getTeacher());
     }
 
-    @Scheduled(cron = "0 32 1 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 1 0 * * *", zone = "Asia/Seoul")
     public void setCheck() {
         Attendance attendance = Attendance.builder()
                 .date(LocalDate.now())
