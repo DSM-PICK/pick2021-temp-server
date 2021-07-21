@@ -43,7 +43,7 @@ public class PickServiceImpl implements PickService{
                 .orElseThrow(StudentNotFoundException::new);
         Attendance attendance = attendanceRepository.findByDate(LocalDate.now())
                 .orElseThrow(AttendanceNotFoundException::new);
-        Check check = checkRepository.findByAttendanceAndStudentAndPeriod(attendance, student, period)
+        Check check = checkRepository.findByAttendanceAndStudentAndPeriodAndCreatedAt(attendance, student, period, LocalDate.now())
                 .orElseThrow(CheckNotFoundException::new);
         check.modifyAttendance(CheckType.valueOf(isAttendance));
         checkRepository.save(check);
@@ -51,7 +51,7 @@ public class PickServiceImpl implements PickService{
 
     @Override
     public CheckResponse getStudentList(String gubun) {
-        List<Check> checkList = checkRepository.findAllByGubun(gubun);
+        List<Check> checkList = checkRepository.findAllByGubunAndCreatedAt(gubun, LocalDate.now());
         Attendance attendance = attendanceRepository.findByDate(LocalDate.now())
                 .orElseThrow(AttendanceNotFoundException::new);
         return new CheckResponse(checkList.stream().map(StudentResponse::new).collect(Collectors.toList()),
