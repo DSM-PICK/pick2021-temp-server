@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -27,6 +29,9 @@ public class Check {
 
     @Column(length = 1)
     private String period;
+
+    @CreationTimestamp
+    private LocalDate createdAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id")
